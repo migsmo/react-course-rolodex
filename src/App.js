@@ -1,25 +1,48 @@
 import { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 
-class App extends Component() {
+class App extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      employees: [],
+      searchField: "",
+    };
+  }
+
+  componentDidMount() {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((response) => response.json())
+      .then((users) =>
+        this.setState(() => {
+          return { employees: users };
+        })
+      );
+  }
+
   render() {
+    const filteredEmployees = this.state.employees.filter((employee) => {
+      return employee.name.toLowerCase().includes(this.state.searchField);
+    });
+
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <input
+          type="search"
+          placeholder="Search employees"
+          onChange={(event) => {
+            const searchField = event.target.value.toLowerCase();
+            this.setState({ searchField });
+          }}
+        />
+        {filteredEmployees.map((employee) => {
+          return (
+            <div key={employee.id}>
+              <h1>{employee.name}</h1>
+            </div>
+          );
+        })}
       </div>
     );
   }

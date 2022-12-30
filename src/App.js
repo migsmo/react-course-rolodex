@@ -1,5 +1,5 @@
-import { Component } from "react";
-import "./App.css";
+import { Component } from 'react';
+import './App.css';
 
 class App extends Component {
   constructor() {
@@ -7,12 +7,12 @@ class App extends Component {
 
     this.state = {
       employees: [],
-      searchField: "",
+      searchField: '',
     };
   }
 
   componentDidMount() {
-    fetch("https://jsonplaceholder.typicode.com/users")
+    fetch('https://jsonplaceholder.typicode.com/users')
       .then((response) => response.json())
       .then((users) =>
         this.setState(() => {
@@ -21,20 +21,28 @@ class App extends Component {
       );
   }
 
+  //Use function outside of render so that we don't have to
+  //re render this function every time we re render the component
+  onSearchChange = (event) => {
+    const searchField = event.target.value.toLowerCase();
+    this.setState({ searchField });
+  };
+
   render() {
-    const filteredEmployees = this.state.employees.filter((employee) => {
-      return employee.name.toLowerCase().includes(this.state.searchField);
+    //Destructuring is more readable
+    const { employees, searchField } = this.state;
+    const { onSearchChange } = this;
+
+    const filteredEmployees = employees.filter((employee) => {
+      return employee.name.toLowerCase().includes(searchField);
     });
 
     return (
-      <div className="App">
+      <div className='App'>
         <input
-          type="search"
-          placeholder="Search employees"
-          onChange={(event) => {
-            const searchField = event.target.value.toLowerCase();
-            this.setState({ searchField });
-          }}
+          type='search'
+          placeholder='Search employees'
+          onChange={onSearchChange}
         />
         {filteredEmployees.map((employee) => {
           return (
